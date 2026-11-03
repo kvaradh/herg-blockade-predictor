@@ -166,8 +166,11 @@ def predict(text):
     if mol is None:
         return gr.update(visible=True, value=f"<div class='card'><div class='hint bad'>{message}</div></div>")
 
+    # featurize returns float64, exactly as in Part1_[GROUP].py; prepare() casts
+    # there and the ONNX input is float32, so the app must cast the same way.
+    features = np.asarray(featurize([text.strip()]), np.float32)
     probability = float(np.asarray(
-        SESSION.run(None, {INPUT_NAME: featurize([text.strip()])})[-1], float)[0, 1])
+        SESSION.run(None, {INPUT_NAME: features})[-1], float)[0, 1])
     blocker = probability >= THRESHOLD
     colour = BLOCK if blocker else SAFE
     margin = abs(probability - THRESHOLD)
