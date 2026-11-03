@@ -2,3 +2,7 @@ numpy==1.26.4
 onnxruntime==1.19.2
 rdkit==2023.9.6
 gradio==5.35.0
+# gradio 5.35.0 imports requests through its CLI module, but huggingface-hub 2.x
+# no longer depends on it, so nothing else pulls it in. Deployment-only: the
+# graded requirements.txt at the repository root is unchanged.
+requests==2.34.2
