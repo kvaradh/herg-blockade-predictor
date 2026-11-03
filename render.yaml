@@ -1,0 +1,14 @@
+# Render blueprint. rootDir puts the service in part2/, where app.py and
+# requirements.txt live; app.py finds the model one directory up, at the
+# repository root, so the 18 MB ONNX is stored only once.
+services:
+  - type: web
+    name: herg-blockade-predictor
+    runtime: python
+    plan: free
+    rootDir: part2
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.7"

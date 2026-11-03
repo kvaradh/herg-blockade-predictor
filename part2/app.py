@@ -87,7 +87,17 @@ THRESHOLD = 0.53
 THRESHOLD = 0.53
 # --------------------------------------------------------------------------------
 
-ONNX_PATH = next(Path(__file__).parent.glob("Part1_*.onnx"))
+def _find_onnx():
+    """The model sits beside app.py in "Part 2.zip"; in the repository it lives at
+    the top level, so a deployed checkout finds it one directory up."""
+    here = Path(__file__).resolve().parent
+    for folder in (here, here.parent):
+        for path in sorted(folder.glob("Part1_*.onnx")):
+            return path
+    raise FileNotFoundError("no Part1_*.onnx beside app.py or in its parent")
+
+
+ONNX_PATH = _find_onnx()
 SESSION = ort.InferenceSession(str(ONNX_PATH), providers=["CPUExecutionProvider"])
 INPUT_NAME = SESSION.get_inputs()[0].name
 
