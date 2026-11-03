@@ -2,7 +2,11 @@
 
 **Group members:** Armine Lalani, Awani Gadre, Faris Raza, Kavin Varadharajulu
 
-**Web app:** TODO - paste the public URL here
+**Web app:** https://herg-blockade-predictor.onrender.com
+
+> Hosted on Render's free tier, which suspends an idle instance. The first
+> request after a quiet spell takes about 50 seconds to wake the service;
+> every request after that is immediate.
 
 Competition entered: **highest specificity with sensitivity > 0.70**.
 
