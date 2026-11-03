@@ -242,9 +242,10 @@ with gr.Blocks(theme=gr.themes.Soft(), css=CSS, title="hERG Blockade Predictor")
     gr.Examples(examples=EXAMPLES, inputs=smiles_box, example_labels=EXAMPLE_LABELS,
                 label="Or try a known compound")
 
-    gr.HTML(f"<div id='footnote'>Random forest on 2048-bit Morgan fingerprints &middot; "
-            f"decision threshold {THRESHOLD} &middot; coursework use only, not a substitute "
-            f"for experimental cardiac safety assessment.</div>")
+    gr.HTML(f"<div id='footnote'>Extremely randomised trees on {N_FEATURES} physicochemical "
+            f"and structural descriptors &middot; decision threshold {THRESHOLD} &middot; "
+            f"coursework use only, not a substitute for experimental cardiac safety "
+            f"assessment.</div>")
 
     smiles_box.change(on_type, smiles_box, [hint, submit, structure], show_progress="hidden")
     smiles_box.submit(predict, smiles_box, result)
@@ -253,4 +254,7 @@ with gr.Blocks(theme=gr.themes.Soft(), css=CSS, title="hERG Blockade Predictor")
 if __name__ == "__main__":
     # Hosts such as Render supply the port in $PORT; locally this falls back to 7860.
     import os
-    demo.launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", 7860)))
+    # SHARE=1 opens a public tunnel (Gradio relays to this process) when we are not
+    # running behind a host that already gives us a public address.
+    demo.launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", 7860)),
+                share=os.environ.get("SHARE") == "1")
