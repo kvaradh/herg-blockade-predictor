@@ -75,15 +75,8 @@ def featurize(smiles):
             continue
     return np.nan_to_num(rows, nan=0.0, posinf=0.0, neginf=0.0)
 
-from sklearn.metrics import (accuracy_score, average_precision_score, confusion_matrix,
-                             f1_score, precision_score, recall_score, roc_auc_score)
-
-# TODO 1: your group's names -> Part1_FIRST1-LAST1-FIRST2-LAST2.onnx
-NAME = "Armine-Lalani-Awani-Gadre-Faris-Raza-Kavin-Varadharajulu"
-
-# TODO 2: your own threshold; justify it in README.md
-THRESHOLD = 0.53
-
+# Copied verbatim from Part1_[GROUP].py, so the app and the submitted model
+# binarise at exactly the same point.
 THRESHOLD = 0.53
 # --------------------------------------------------------------------------------
 
