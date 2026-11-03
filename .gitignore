@@ -9,3 +9,4 @@ __pycache__/
 # the app's copy of the model ships inside "Part 2.zip" as the assignment
 # requires; tracking it here too would duplicate 18 MB in the repository
 part2/*.onnx
+.gradio/
