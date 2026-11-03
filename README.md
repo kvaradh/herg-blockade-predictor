@@ -16,6 +16,21 @@ Competition entered: **highest specificity with sensitivity > 0.70**.
 | sensitivity | 0.727 | 0.787 |
 | ROC-AUC | 0.840 | 0.900 |
 
+The scaffold-split column is our estimate of performance on the graded test set,
+which is described as different in composition from the data we were given. The
+random-split column is shown only to make the gap between the two visible.
+
+## Where each submission item is
+
+| required | where |
+| --- | --- |
+| training script | `Part1_Armine-Lalani-Awani-Gadre-Faris-Raza-Kavin-Varadharajulu.py` |
+| saved model (ONNX, 18.8 MB) | `Part1_Armine-Lalani-Awani-Gadre-Faris-Raza-Kavin-Varadharajulu.onnx` |
+| public web app URL | top of this file |
+| deployed app code | `Part 2.zip`, also unzipped in `part2/` |
+| writeup (threshold, features, model) | [Writeup](#writeup) below |
+| reflection on LLM use | [Use of LLMs](#use-of-llms) below |
+
 ## Writeup
 
 **Decision threshold.** We submit 0.53 rather than the default 0.5. A prediction is
@@ -70,22 +85,52 @@ as the real one and tuned the threshold against it.
 
 ## Use of LLMs
 
-TODO - WRITE THIS YOURSELVES, HONESTLY. Worth covering if true: using Claude to
-build the cross-validation harness and compare candidate featurizers and models;
-having it measure the ONNX export size and memory footprint against the hosting
-limits; that it found two bugs in the web app (a missing RDKit import that silently
-zeroed every descriptor, and an unimported module that froze the validation state);
-and which decisions and code each of you made yourselves.
+> **TO DO — the group writes this, in your own words, before submitting.**
+>
+> Points you may want to cover, to the extent they are true for each of you:
+> which parts you wrote yourselves and which an LLM drafted; using Claude to
+> build the scaffold-split cross-validation harness and to compare candidate
+> featurizers and models; having it measure ONNX size and memory against the
+> 50 MB limit and the host's 512 MB; and the bugs it caught — the app
+> describing the previous model in its footer, an `sklearn` import left behind
+> when the featurizer was copied across, and a float64/float32 mismatch that
+> would have made every prediction on the deployed app fail.
+
+## The web app
+
+`part2/app.py` is a single-file Gradio app, deployed on Render and served from the
+URL above. It loads the submitted ONNX file directly, and `featurize` and
+`THRESHOLD` are copied verbatim from the training script, so the app and the
+submitted model agree by construction rather than by coincidence.
+
+Validation runs as you type: the Predict button stays disabled until RDKit parses
+the string, and the box shows either the reason it is invalid or the molecular
+formula, heavy-atom count and a drawing of the structure.
+
+Checked against the deployed service, every molecule `TestModel.py` prints comes
+back identical from the live app:
+
+| SMILES | TestModel | live app |
+| --- | --- | --- |
+| `CCO` | 0.105 | 10.5% |
+| aspirin | 0.050 | 5.0% |
+| diphenhydramine·HCl | 0.726 | 72.6% |
+| fluoxetine | 0.905 | 90.5% |
+| terfenadine | 0.917 | 91.7% |
+| 194-character PEG chain | 0.284 | 28.4% |
 
 ## Repository contents
 
 | file | what it is |
 | --- | --- |
-| `Part1_Armine-Lalani-Awani-Gadre-Faris-Raza-Kavin-Varadharajulu.py` | training script: featurize, build_model, threshold, ONNX export |
-| `Part1_Armine-Lalani-Awani-Gadre-Faris-Raza-Kavin-Varadharajulu.onnx` | the submitted model, 18.8 MB |
-| `requirements.txt` | pinned dependencies |
+| `Part1_...-Varadharajulu.py` | training script: `featurize`, `build_model`, threshold, ONNX export |
+| `Part1_...-Varadharajulu.onnx` | the submitted model, 18.8 MB |
 | `Part 2.zip` | web app source plus a byte-identical copy of the ONNX |
-| `part2/` | the same app files, unzipped |
+| `part2/` | the same app files unzipped, which is what Render deploys |
+| `requirements.txt` | pinned dependencies for training |
+| `TestModel.py` | the course's checker, unmodified |
+| `data/hw1data.tab` | the provided dataset, unmodified |
+| `render.yaml` | deployment configuration |
 
 ## Reproducing
 
@@ -95,3 +140,15 @@ pip install -r requirements.txt
 python "Part1_Armine-Lalani-Awani-Gadre-Faris-Raza-Kavin-Varadharajulu.py"
 python TestModel.py "Part1_Armine-Lalani-Awani-Gadre-Faris-Raza-Kavin-Varadharajulu.py"
 ```
+
+Training takes about 45 seconds on a laptop CPU. We ran this in a clean virtual
+environment built from `requirements.txt`: it reproduces the committed `.onnx`
+byte for byte, and `TestModel.py` reports 13 of 13 PASS.
+
+### One note on the app's dependencies
+
+`part2/requirements.txt` adds `requests==2.34.2`, which is not on the assignment's
+allowed list. It is not used by our code. gradio 5.35.0 imports it internally
+through `gradio.cli`, and huggingface-hub 2.x no longer depends on it, so a clean
+install of the course `requirements.txt` cannot import gradio at all and the app
+will not start. The graded `requirements.txt` at the repository root is unchanged.
