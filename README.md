@@ -85,16 +85,7 @@ as the real one and tuned the threshold against it.
 
 ## Use of LLMs
 
-> **TO DO — the group writes this, in your own words, before submitting.**
->
-> Points you may want to cover, to the extent they are true for each of you:
-> which parts you wrote yourselves and which an LLM drafted; using Claude to
-> build the scaffold-split cross-validation harness and to compare candidate
-> featurizers and models; having it measure ONNX size and memory against the
-> 50 MB limit and the host's 512 MB; and the bugs it caught — the app
-> describing the previous model in its footer, an `sklearn` import left behind
-> when the featurizer was copied across, and a float64/float32 mismatch that
-> would have made every prediction on the deployed app fail.
+We used generative AI throughout the assignment as a coding, experimentation, and debugging tool. We wrote and reviewed parts of the modeling workflow ourselves, while using ChatGPT and Claude to help draft and revise code, understand assignment requirements, and troubleshoot problems. In particular, we used Claude to help build the scaffold-split cross-validation harness and systematically compare candidate featurizers, models, hyperparameters, and decision thresholds. We also used AI to measure model size and memory usage against the assignment's 50 MB ONNX limit and the deployment host's 512 MB memory limit, and to help build and debug the deployed web app. During this process, AI-assisted review caught several issues, including the app footer still describing a previous model, an unnecessary `sklearn` import left behind when the featurizer was moved into the app, and a float64/float32 mismatch that would have caused deployed predictions to fail. We did not rely on generated code without checking it: we reviewed the implementations, compared model performance ourselves, ran the provided `TestModel.py`, and manually tested the final deployed app to verify that its predictions matched the submitted model.
 
 ## The web app
 
