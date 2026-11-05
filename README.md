@@ -9,6 +9,7 @@
 > every request after that is immediate.
 
 Competition entered: **highest specificity with sensitivity > 0.70**.
+Final model: 39 RDKit/string features → StandardScaler → ExtraTreesClassifier (100 trees, min_samples_leaf=2) → threshold 0.53.
 
 | | scaffold split (honest) | random split |
 | --- | --- | --- |
